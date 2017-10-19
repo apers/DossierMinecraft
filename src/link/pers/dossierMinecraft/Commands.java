@@ -10,7 +10,11 @@ public class Commands implements CommandExecutor {
   public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
     if (commandSender instanceof Player) {
       Player player = (Player) commandSender;
-      // Here we need to give items to our player
+
+      if(s.equals("blocks")) {
+        Integer availableBlocks = (Integer) player.getMetadata("availableBlocks").get(0).value();
+        player.sendMessage("Available blocks: " + availableBlocks);
+      }
     }
 
     return true;

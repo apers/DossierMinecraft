@@ -2,3 +2,6 @@ name: DossierMinecraft
 main: link.pers.dossierMinecraft.Main
 version: 1.0
 commands:
+   blocks:
+     description: See block information for player
+     usage: /blocks.

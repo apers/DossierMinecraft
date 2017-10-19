@@ -2,6 +2,7 @@ package link.pers.dossierMinecraft;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -11,7 +12,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 public class JsonApi {
-  public int getUsersAvailableBlocks(String jiraUser) {
+  public Integer getUsersAvailableBlocks(String jiraUser) {
+    System.out.println("jiraUser: " + jiraUser);
     String json = "";
     JsonElement userScoreElement = null;
     try {
@@ -19,9 +21,13 @@ public class JsonApi {
       JsonElement root = new JsonParser().parse(json);
       JsonArray userArray = root.getAsJsonObject().get("Users").getAsJsonArray();
 
-      for(JsonElement userElement : userArray) {
+      for (JsonElement userElement : userArray) {
         JsonObject userObj = userElement.getAsJsonObject();
-        userScoreElement = userObj.get(jiraUser);
+
+        if (userObj.get("Username").getAsString().equals(jiraUser)) {
+          userScoreElement = userObj.get("Tasks");
+        }
+
         if (userScoreElement != null) {
           break;
         }
@@ -31,7 +37,12 @@ public class JsonApi {
       System.err.println("Could not access 'do.pers.link/stats'");
       e.printStackTrace();
     }
-    return userScoreElement.getAsInt();
+    if (userScoreElement != null) {
+      return userScoreElement.getAsInt();
+    }
+    else {
+      return null;
+    }
   }
 
   private static String getJson(String urlToRead) throws Exception {
@@ -46,5 +57,37 @@ public class JsonApi {
     }
     rd.close();
     return result.toString();
+  }
+
+  public static void updateScore(String jiraName, int availableBlocks) throws Exception {
+    sendPostRequest("http://do.pers.link/stats", "{ \"username\": \"" + jiraName + "\", \"availableBlocks\": " + availableBlocks + "}");
+  }
+
+  private static void sendPostRequest(String requestUrl, String payload) {
+    try {
+      URL url = new URL(requestUrl);
+      HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+      connection.setDoInput(true);
+      connection.setDoOutput(true);
+      connection.setRequestMethod("POST");
+      connection.setRequestProperty("Accept", "application/json");
+      connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+      OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream(), "UTF-8");
+      writer.write(payload);
+      writer.close();
+      BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+      StringBuilder jsonString = new StringBuilder();
+      String line;
+      while ((line = br.readLine()) != null) {
+        jsonString.append(line);
+      }
+      br.close();
+      connection.disconnect();
+      jsonString.toString();
+    }
+    catch (Exception e) {
+      throw new RuntimeException(e.getMessage());
+    }
   }
 }

@@ -4,11 +4,19 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
 
+  private static Main instance = null;
+
+  public static Main getInstance() {
+    return instance;
+  }
 
   @Override
   public void onEnable() {
-    System.out.println("\n\n=======================\n\n");
+    instance = this;
+    this.getCommand("blocks").setExecutor(new Commands());
     getServer().getPluginManager().registerEvents(new EventListener(), this);
+
+    System.out.println("\n\n=======================\n\n");
     System.out.println(ConfigSingleton.getInstance().getUserNameMap());
     System.out.println("\n\n=======================\n\n");
   }
