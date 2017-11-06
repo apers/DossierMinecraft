@@ -59,6 +59,16 @@ public class JsonApi {
     return result.toString();
   }
 
+  public static void placeBlock(String username, String material, int x, int y, int z) {
+    sendPostRequest(
+        "http://do.pers.link/blocks",
+        "{ \"username\": \"" + username +
+            "\", \"material\": " + material +
+            "\", \"x\": " + x +
+            "\", \"y\": " + y +
+            "\", \"z\": " + z + "}");
+  }
+
   public static void updateScore(String jiraName, int availableBlocks) throws Exception {
     sendPostRequest("http://do.pers.link/stats", "{ \"username\": \"" + jiraName + "\", \"availableBlocks\": " + availableBlocks + "}");
   }
