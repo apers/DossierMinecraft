@@ -30,6 +30,8 @@ public class EventListener implements Listener {
 
       Block blockPlaced = event.getBlockPlaced();
       blockPlaced.setMetadata("placedBy", new FixedMetadataValue(Main.getInstance(), event.getPlayer().getName()));
+
+      event.getPlayer().sendMessage("Available blocks: " + availableBlocks);
     }
   }
 

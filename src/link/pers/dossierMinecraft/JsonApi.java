@@ -19,13 +19,13 @@ public class JsonApi {
     try {
       json = getJson("http://do.pers.link/stats");
       JsonElement root = new JsonParser().parse(json);
-      JsonArray userArray = root.getAsJsonObject().get("Users").getAsJsonArray();
+      JsonArray userArray = root.getAsJsonObject().get("users").getAsJsonArray();
 
       for (JsonElement userElement : userArray) {
         JsonObject userObj = userElement.getAsJsonObject();
 
-        if (userObj.get("Username").getAsString().equals(jiraUser)) {
-          userScoreElement = userObj.get("Tasks");
+        if (userObj.get("username").getAsString().equals(jiraUser)) {
+          userScoreElement = userObj.get("available_blocks");
         }
 
         if (userScoreElement != null) {
